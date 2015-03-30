@@ -15,6 +15,12 @@ define wordpress::instance::db (
       name => $db_name,
       charset => 'utf8',
     }
+   file { '/tmp/create_wordpress_db.erb':
+     ensure => file,
+     content => template('wordpress/create_wordpress_db.erb'),
+     before => Exec [ '/usr/bin/mysql -u root  < /tmp/create_wordpress_db.erb' ],
+   }
+    exec { '/usr/bin/mysql -u root  < /tmp/create_wordpress_db.erb': }
   }
   if $create_db_user {
     mysql_user { "${db_user}@${db_host}":
